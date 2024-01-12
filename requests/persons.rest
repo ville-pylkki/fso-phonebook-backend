@@ -1,6 +1,12 @@
 ### Get all persons
 GET http://localhost:3001/api/persons
 
+### Create person
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{"name": "name", "number": "number"}
+
 ### Get person
 GET http://localhost:3001/api/persons/1
 

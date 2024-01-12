@@ -34,6 +34,19 @@ const findPerson = id => {
 	return persons.find(person => person.id === id)
 }
 
+const generateNewId = () => {
+	let newId
+	let isUniqueId = false
+	do {
+		newId = Math.floor(Math.random() * 999 + 1)
+		if (!findPerson(newId)) {
+			isUniqueId = true
+		}
+	} while (!isUniqueId)
+
+	return newId
+}
+
 const personsResourceRoot = '/api/persons'
 
 app.get('/', (request, response) => {
@@ -74,6 +87,15 @@ app.delete(`${personsResourceRoot}/:id`, (request, response) => {
 	deletePerson(requestedPersonId)
 
 	response.status(204).end()
+})
+
+app.post(personsResourceRoot, (request, response) => {
+	const newPerson = request.body
+	newPerson.id = generateNewId()
+
+	persons = persons.concat(newPerson)
+
+	response.json(newPerson)
 })
 
 app.get('/info', (request, response) => {
