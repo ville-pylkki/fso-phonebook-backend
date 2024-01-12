@@ -3,7 +3,7 @@ const app = express()
 
 app.use(express.json())
 
-const persons = [
+let persons = [
 	{ 
 		'id': 1,
 		'name': 'Arto Hellas', 
@@ -25,6 +25,10 @@ const persons = [
 		'number': '39-23-6423122'
 	}
 ]
+
+const deletePerson = id => {
+	persons = persons.filter(person => person.id !== id)
+}
 
 const findPerson = id => {
 	return persons.find(person => person.id === id)
@@ -54,6 +58,22 @@ app.get(`${personsResourceRoot}/:id`, (request, response) => {
 	}
 
 	response.json(foundPerson)
+})
+
+app.delete(`${personsResourceRoot}/:id`, (request, response) => {
+	const requestedPersonId = Number(request.params.id)
+
+	if (!requestedPersonId) {
+		return response.status(400).json({'error': 'malformed id'})
+	}
+
+	if (!findPerson(requestedPersonId)) {
+		return response.status(404).json({'error': 'could not find person with id ' + requestedPersonId})
+	}
+
+	deletePerson(requestedPersonId)
+
+	response.status(204).end()
 })
 
 app.get('/info', (request, response) => {
