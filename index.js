@@ -26,8 +26,34 @@ const persons = [
 	}
 ]
 
+const findPerson = id => {
+	return persons.find(person => person.id === id)
+}
+
+const personsResourceRoot = '/api/persons'
+
 app.get('/', (request, response) => {
 	response.send('<!doctype html><html><body><h1>Nothing in the root</h1></body></html>')
+})
+
+app.get(personsResourceRoot, (request, response) => {
+	response.json(persons)
+})
+
+app.get(`${personsResourceRoot}/:id`, (request, response) => {
+	const requestedPersonId = Number(request.params.id)
+
+	if (!requestedPersonId) {
+		return response.status(400).json({'error': 'malformed id'})
+	}
+
+	const foundPerson = findPerson(requestedPersonId)
+
+	if (!foundPerson) {
+		return response.status(404).json({'error': 'could not find person with id ' + requestedPersonId})
+	}
+
+	response.json(foundPerson)
 })
 
 app.get('/info', (request, response) => {
@@ -40,10 +66,6 @@ app.get('/info', (request, response) => {
 			</body>
 		</html>`
 	)
-})
-
-app.get('/api/persons', (request, response) => {
-	response.json(persons)
 })
 
 const PORT = 3001
