@@ -7,6 +7,24 @@ Content-Type: application/json
 
 {"name": "name", "number": "number"}
 
+### Create person, name missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{"noname": "name", "number": "number"}
+
+### Create person, number missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{"name": "name"}
+
+### Create person, name and number missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{"nonumber": "number"}
+
 ### Get person
 GET http://localhost:3001/api/persons/1
 

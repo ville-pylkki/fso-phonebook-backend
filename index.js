@@ -34,6 +34,10 @@ const findPerson = id => {
 	return persons.find(person => person.id === id)
 }
 
+const findPersonByName = name => {
+	return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+}
+
 const generateNewId = () => {
 	let newId
 	let isUniqueId = false
@@ -45,6 +49,20 @@ const generateNewId = () => {
 	} while (!isUniqueId)
 
 	return newId
+}
+
+const validatePerson = person => {
+	if (!person.hasOwnProperty('name')) {
+		return 'cannot create person without name'
+	}
+	if (!person.hasOwnProperty('number')) {
+		return 'cannot create person without number'
+	}
+	if (findPersonByName(person.name)) {
+		return `person with name '${person.name}' already exists` 
+	}
+
+	return null
 }
 
 const personsResourceRoot = '/api/persons'
@@ -91,6 +109,12 @@ app.delete(`${personsResourceRoot}/:id`, (request, response) => {
 
 app.post(personsResourceRoot, (request, response) => {
 	const newPerson = request.body
+
+	const error = validatePerson(newPerson)
+	if (error) {
+		return response.status(400).json({'error': error})
+	}
+
 	newPerson.id = generateNewId()
 
 	persons = persons.concat(newPerson)
