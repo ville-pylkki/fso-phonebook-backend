@@ -1,0 +1,27 @@
+{
+  "name": "fso-phonebook-backend",
+  "version": "0.0.1",
+  "description": "Full stack open, phonebook backend exercises",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ville-pylkki/fso-phonebook-backend.git"
+  },
+  "author": "Ville Pylkki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ville-pylkki/fso-phonebook-backend/issues"
+  },
+  "homepage": "https://github.com/ville-pylkki/fso-phonebook-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
