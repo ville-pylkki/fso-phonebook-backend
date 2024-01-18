@@ -1,10 +1,26 @@
 const express = require('express')
 const morgan = require('morgan')
 
+const assignPostContent = (request, response, next) => {
+	if (request.method === 'POST') {
+		request.postContent = JSON.stringify(request.body)
+	}
+	else {
+		request.postContent = ''
+	}
+
+	next()
+}
+
+morgan.token('post-content', request => {
+	return request.postContent
+})
+
 const app = express()
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(assignPostContent)
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 
 let persons = [
 	{ 
