@@ -1,3 +1,4 @@
+const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
 
@@ -21,6 +22,7 @@ const app = express()
 app.use(express.json())
 app.use(assignPostContent)
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
+app.use(cors())
 
 let persons = [
 	{ 
