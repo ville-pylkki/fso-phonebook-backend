@@ -1,0 +1,44 @@
+### Get all persons
+GET https://fso-phonebook-vebr.onrender.com/api/persons
+
+### Create person
+POST https://fso-phonebook-vebr.onrender.com/api/persons
+Content-Type: application/json
+
+{"name": "name", "number": "number"}
+
+### Create person, name missing
+POST https://fso-phonebook-vebr.onrender.com/api/persons
+Content-Type: application/json
+
+{"noname": "name", "number": "number"}
+
+### Create person, number missing
+POST https://fso-phonebook-vebr.onrender.com/api/persons
+Content-Type: application/json
+
+{"name": "name"}
+
+### Create person, name and number missing
+POST https://fso-phonebook-vebr.onrender.com/api/persons
+Content-Type: application/json
+
+{"nonumber": "number"}
+
+### Get person
+GET https://fso-phonebook-vebr.onrender.com/api/persons/1
+
+### Get person, malformed id
+GET https://fso-phonebook-vebr.onrender.com/api/persons/text
+
+### Get person, non-existing id
+GET https://fso-phonebook-vebr.onrender.com/api/persons/999
+
+### Delete person
+DELETE https://fso-phonebook-vebr.onrender.com/api/persons/1
+
+### Delete person, malformed id
+DELETE https://fso-phonebook-vebr.onrender.com/api/persons/text
+
+### Delete person, non-existing id
+DELETE https://fso-phonebook-vebr.onrender.com/api/persons/999
