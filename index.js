@@ -20,6 +20,7 @@ morgan.token('post-content', request => {
 const app = express()
 
 app.use(express.json())
+app.use(express.static('dist'))
 app.use(assignPostContent)
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 app.use(cors())
