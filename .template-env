@@ -1,0 +1,4 @@
+# MongoDB URI that the application will use for data
+DB_URI=
+# The network port that the application will run on
+PORT=

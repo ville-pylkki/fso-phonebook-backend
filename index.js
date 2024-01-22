@@ -1,6 +1,10 @@
+require('dotenv').config()
+
 const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
+
+const Person = require('./models/person')
 
 const assignPostContent = (request, response, next) => {
 	if (request.method === 'POST') {
@@ -156,7 +160,7 @@ app.get('/info', (request, response) => {
 	)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.info(`Server running on port ${PORT}`)
 })
