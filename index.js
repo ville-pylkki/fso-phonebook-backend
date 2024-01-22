@@ -64,19 +64,6 @@ const findPersonByName = name => {
 	return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
 }
 
-const generateNewId = () => {
-	let newId
-	let isUniqueId = false
-	do {
-		newId = Math.floor(Math.random() * 999 + 1)
-		if (!findPerson(newId)) {
-			isUniqueId = true
-		}
-	} while (!isUniqueId)
-
-	return newId
-}
-
 const validatePerson = person => {
 	if (!person.hasOwnProperty('name')) {
 		return 'cannot create person without name'
@@ -98,7 +85,10 @@ app.get('/', (request, response) => {
 })
 
 app.get(personsResourceRoot, (request, response) => {
-	response.json(persons)
+	Person.find()
+		.then(result => {
+			response.json(result)
+		})
 })
 
 app.get(`${personsResourceRoot}/:id`, (request, response) => {
@@ -108,13 +98,10 @@ app.get(`${personsResourceRoot}/:id`, (request, response) => {
 		return response.status(400).json({'error': 'malformed id'})
 	}
 
-	const foundPerson = findPerson(requestedPersonId)
-
-	if (!foundPerson) {
-		return response.status(404).json({'error': 'could not find person with id ' + requestedPersonId})
-	}
-
-	response.json(foundPerson)
+	Person.findById(requestedPersonId)
+		.then(result => {
+			response.json(result)
+		})
 })
 
 app.delete(`${personsResourceRoot}/:id`, (request, response) => {
@@ -134,18 +121,20 @@ app.delete(`${personsResourceRoot}/:id`, (request, response) => {
 })
 
 app.post(personsResourceRoot, (request, response) => {
-	const newPerson = request.body
-
-	const error = validatePerson(newPerson)
+	const error = validatePerson({'name': request.body.name, 'number': request.body.number})
 	if (error) {
 		return response.status(400).json({'error': error})
 	}
 
-	newPerson.id = generateNewId()
+	const newPerson = new Person({
+		'name': request.body.name,
+		'number': request.body.number
+	})
 
-	persons = persons.concat(newPerson)
-
-	response.json(newPerson)
+	newPerson.save()
+		.then(result => {
+			response.json(newPerson)
+		})
 })
 
 app.get('/info', (request, response) => {
