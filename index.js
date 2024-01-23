@@ -92,12 +92,6 @@ app.get(personsResourceRoot, (request, response) => {
 })
 
 app.get(`${personsResourceRoot}/:id`, (request, response) => {
-	const requestedPersonId = Number(request.params.id)
-
-	if (!requestedPersonId) {
-		return response.status(400).json({'error': 'malformed id'})
-	}
-
 	Person.findById(requestedPersonId)
 		.then(result => {
 			response.json(result)
