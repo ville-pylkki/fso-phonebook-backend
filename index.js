@@ -52,25 +52,12 @@ let persons = [
 	}
 ]
 
-const findPersonByName = name => {
-	Person.find({'name': name})
-		.then(result => {
-			return result
-		})
-		.catch(error => {
-			console.error(`Error when finding person by name ${name}`, error)
-		})
-}
-
 const validatePerson = person => {
 	if (!person.hasOwnProperty('name')) {
 		return 'cannot create person without name'
 	}
 	if (!person.hasOwnProperty('number')) {
 		return 'cannot create person without number'
-	}
-	if (findPersonByName(person.name)) {
-		return `person with name '${person.name}' already exists` 
 	}
 
 	return null
@@ -109,17 +96,31 @@ app.delete(`${personsResourceRoot}/:id`, (request, response) => {
 app.post(personsResourceRoot, (request, response) => {
 	const error = validatePerson(request.body)
 	if (error) {
+		console.error('Person validation error', error)
 		return response.status(400).json({'error': error})
 	}
-
-	const newPerson = new Person({
-		'name': request.body.name,
-		'number': request.body.number
-	})
-
-	newPerson.save()
+	
+	Person.find({'name': request.body.name})
 		.then(result => {
-			response.json(newPerson)
+			if (result.length > 0) {
+				const message = `Person with name '${request.body.name}' already exists`
+				console.error(message)
+				return response.status(400).json({'error': message})
+			}
+			else {
+				const newPerson = new Person({
+					'name': request.body.name,
+					'number': request.body.number
+				})
+			
+				newPerson.save()
+					.then(result => {
+						response.json(newPerson)
+					})
+			}
+		})
+		.catch(error => {
+			console.error(`Error when finding person by name ${request.body.name}`, error)
 		})
 })
 
