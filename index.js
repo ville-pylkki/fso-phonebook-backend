@@ -29,6 +29,13 @@ app.use(assignPostContent)
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 app.use(cors())
 
+const errorHandler = (error, request, response, next) => {
+	console.error(error.message)
+	if (error.name === 'CastError') {
+		return response.status(400).send({'error': 'malformed ID'})
+	}
+}
+
 let persons = [
 	{ 
 		'id': 1,
@@ -69,31 +76,37 @@ app.get('/', (request, response) => {
 	response.send('<!doctype html><html><body><h1>Nothing in the root</h1></body></html>')
 })
 
-app.get(personsResourceRoot, (request, response) => {
+app.get(personsResourceRoot, (request, response, next) => {
 	Person.find()
 		.then(result => {
 			response.json(result)
 		})
+		.catch(error => {
+			next(error)
+		})
 })
 
-app.get(`${personsResourceRoot}/:id`, (request, response) => {
+app.get(`${personsResourceRoot}/:id`, (request, response, next) => {
 	Person.findById(request.params.id)
 		.then(result => {
 			response.json(result)
 		})
+		.catch(error => {
+			next(error)
+		})
 })
 
-app.delete(`${personsResourceRoot}/:id`, (request, response) => {
+app.delete(`${personsResourceRoot}/:id`, (request, response, next) => {
 	Person.findByIdAndDelete(request.params.id)
 		.then(result => {
 			response.status(204).end()
 		})
 		.catch(error => {
-			console.error(`Deleting person with ID ${request.params.id} failed`, error)
+			next(error)
 		})
 })
 
-app.post(personsResourceRoot, (request, response) => {
+app.post(personsResourceRoot, (request, response, next) => {
 	const error = validatePerson(request.body)
 	if (error) {
 		console.error('Person validation error', error)
@@ -117,10 +130,13 @@ app.post(personsResourceRoot, (request, response) => {
 					.then(result => {
 						response.json(newPerson)
 					})
+					.catch(error => {
+						next(error)
+					})
 			}
 		})
 		.catch(error => {
-			console.error(`Error when finding person by name ${request.body.name}`, error)
+			next(error)
 		})
 })
 
@@ -135,6 +151,8 @@ app.get('/info', (request, response) => {
 		</html>`
 	)
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
