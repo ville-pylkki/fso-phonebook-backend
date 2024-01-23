@@ -52,16 +52,14 @@ let persons = [
 	}
 ]
 
-const deletePerson = id => {
-	persons = persons.filter(person => person.id !== id)
-}
-
-const findPerson = id => {
-	return persons.find(person => person.id === id)
-}
-
 const findPersonByName = name => {
-	return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+	Person.find({'name': name})
+		.then(result => {
+			return result
+		})
+		.catch(error => {
+			console.error(`Error when finding person by name ${name}`, error)
+		})
 }
 
 const validatePerson = person => {
