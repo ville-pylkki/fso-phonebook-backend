@@ -92,7 +92,7 @@ app.get(personsResourceRoot, (request, response) => {
 })
 
 app.get(`${personsResourceRoot}/:id`, (request, response) => {
-	Person.findById(requestedPersonId)
+	Person.findById(request.params.id)
 		.then(result => {
 			response.json(result)
 		})
