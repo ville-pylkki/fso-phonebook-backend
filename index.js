@@ -99,19 +99,13 @@ app.get(`${personsResourceRoot}/:id`, (request, response) => {
 })
 
 app.delete(`${personsResourceRoot}/:id`, (request, response) => {
-	const requestedPersonId = Number(request.params.id)
-
-	if (!requestedPersonId) {
-		return response.status(400).json({'error': 'malformed id'})
-	}
-
-	if (!findPerson(requestedPersonId)) {
-		return response.status(404).json({'error': 'could not find person with id ' + requestedPersonId})
-	}
-
-	deletePerson(requestedPersonId)
-
-	response.status(204).end()
+	Person.findByIdAndDelete(request.params.id)
+		.then(result => {
+			response.status(204).end()
+		})
+		.catch(error => {
+			console.error(`Deleting person with ID ${request.params.id} failed`, error)
+		})
 })
 
 app.post(personsResourceRoot, (request, response) => {
