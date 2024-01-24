@@ -42,3 +42,33 @@ DELETE http://localhost:3001/api/persons/text
 
 ### Delete person, non-existing id
 DELETE http://localhost:3001/api/persons/999
+
+### Update person
+PUT http://localhost:3001/api/persons/1
+Content-Type: application/json
+
+{"name": "name", "number": "number"}
+
+### Update person, malformed id
+PUT http://localhost:3001/api/persons/text
+Content-Type: application/json
+
+{"name": "name", "number": "number"}
+
+### Update person, name missing
+PUT http://localhost:3001/api/persons/1
+Content-Type: application/json
+
+{"number": "number"}
+
+### Update person, number missing
+PUT http://localhost:3001/api/persons/1
+Content-Type: application/json
+
+{"name": "name", "nonumber": "number"}
+
+### Update person, non-existing id
+PUT http://localhost:3001/api/persons/999
+Content-Type: application/json
+
+{"name": "name", "number": "number"}
