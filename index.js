@@ -36,29 +36,6 @@ const errorHandler = (error, request, response, next) => {
 	}
 }
 
-let persons = [
-	{ 
-		'id': 1,
-		'name': 'Arto Hellas', 
-		'number': '040-123456'
-	},
-	{ 
-		'id': 2,
-		'name': 'Ada Lovelace', 
-		'number': '39-44-5323523'
-	},
-	{ 
-		'id': 3,
-		'name': 'Dan Abramov', 
-		'number': '12-43-234345'
-	},
-	{ 
-		'id': 4,
-		'name': 'Mary Poppendieck', 
-		'number': '39-23-6423122'
-	}
-]
-
 const validatePerson = person => {
 	if (!person.hasOwnProperty('name')) {
 		return 'cannot create or modify person without name'
@@ -171,15 +148,21 @@ app.put(`${personsResourceRoot}/:id`, (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-	response.send(
-		`<!doctype html>
-		<html>
-			<body>
-				<p>The phonebook has info for ${persons.length} people.</p>
-				<p>${new Date()}</p>
-			</body>
-		</html>`
-	)
+	Person.find()
+		.then(result => {
+			response.send(
+				`<!doctype html>
+				<html>
+					<body>
+						<p>The phonebook has info for ${result.length} people.</p>
+						<p>${new Date()}</p>
+					</body>
+				</html>`
+			)
+		})
+		.catch(error => {
+			next(error)
+		})
 })
 
 app.use(errorHandler)
