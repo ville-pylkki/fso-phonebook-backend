@@ -34,6 +34,11 @@ const errorHandler = (error, request, response, next) => {
 	if (error.name === 'CastError') {
 		return response.status(400).send({'error': 'malformed ID'})
 	}
+	else if (error.name === 'ValidationError') {
+		return response.status(400).send({'error': error.message})
+	}
+
+	return response.status(400).send({'error': 'generic error'})
 }
 
 const validatePerson = person => {
@@ -133,7 +138,7 @@ app.put(`${personsResourceRoot}/:id`, (request, response, next) => {
 		'name': request.body.name,
 		'number': request.body.number
 	}
-	Person.findByIdAndUpdate(request.params.id, updatedPerson, {'new': true})
+	Person.findByIdAndUpdate(request.params.id, updatedPerson, {'new': true, 'runValidators': true, 'context': 'query'})
 		.then(result => {
 			if (result) {
 				response.json(result)
