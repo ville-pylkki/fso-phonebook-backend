@@ -13,13 +13,29 @@ mongoose.connect(dbUrl)
 		console.error('Database connection failed', error)
 	})
 
+
+const numberValidator = input => {
+	console.log('Validating', input)
+	return false
+}
+
 const personSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		minLength: 3,
 		required: true
 	},
-	number: String
+	number: {
+		type: String,
+		minLength: 8,
+		validate: {
+			validator: numberValidator,
+			message: props => {
+				`Phone number ${props.value} is not valid`
+			}
+		},
+		required: true
+	}
 })
 
 personSchema.set('toJSON', {
