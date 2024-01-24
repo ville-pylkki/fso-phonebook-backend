@@ -61,10 +61,10 @@ let persons = [
 
 const validatePerson = person => {
 	if (!person.hasOwnProperty('name')) {
-		return 'cannot create person without name'
+		return 'cannot create or modify person without name'
 	}
 	if (!person.hasOwnProperty('number')) {
-		return 'cannot create person without number'
+		return 'cannot create or modify person without number'
 	}
 
 	return null
@@ -99,7 +99,12 @@ app.get(`${personsResourceRoot}/:id`, (request, response, next) => {
 app.delete(`${personsResourceRoot}/:id`, (request, response, next) => {
 	Person.findByIdAndDelete(request.params.id)
 		.then(result => {
-			response.status(204).end()
+			if (result) {
+				response.status(204).end()
+			}
+			else {
+				response.status(404).end()
+			}
 		})
 		.catch(error => {
 			next(error)
@@ -133,6 +138,31 @@ app.post(personsResourceRoot, (request, response, next) => {
 					.catch(error => {
 						next(error)
 					})
+			}
+		})
+		.catch(error => {
+			next(error)
+		})
+})
+
+app.put(`${personsResourceRoot}/:id`, (request, response, next) => {
+	const error = validatePerson(request.body)
+	if (error) {
+		console.error('Person validation error', error)
+		return response.status(400).json({'error': error})
+	}
+
+	const updatedPerson = {
+		'name': request.body.name,
+		'number': request.body.number
+	}
+	Person.findByIdAndUpdate(request.params.id, updatedPerson, {'new': true})
+		.then(result => {
+			if (result) {
+				response.json(result)
+			}
+			else {
+				response.status(404).end()
 			}
 		})
 		.catch(error => {
