@@ -42,10 +42,10 @@ const errorHandler = (error, request, response) => {
 }
 
 const validatePerson = person => {
-	if (!person.hasOwn('name')) {
+	if (!Object.hasOwn(person, 'name')) {
 		return 'cannot create or modify person without name'
 	}
-	if (!person.hasOwn('number')) {
+	if (!Object.hasOwn(person, 'number')) {
 		return 'cannot create or modify person without number'
 	}
 
