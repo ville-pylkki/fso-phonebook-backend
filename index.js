@@ -29,7 +29,7 @@ app.use(assignPostContent)
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 app.use(cors())
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response) => {
 	console.error(error.message)
 	if (error.name === 'CastError') {
 		return response.status(400).send({'error': 'malformed ID'})
@@ -42,10 +42,10 @@ const errorHandler = (error, request, response, next) => {
 }
 
 const validatePerson = person => {
-	if (!person.hasOwnProperty('name')) {
+	if (!person.hasOwn('name')) {
 		return 'cannot create or modify person without name'
 	}
-	if (!person.hasOwnProperty('number')) {
+	if (!person.hasOwn('number')) {
 		return 'cannot create or modify person without number'
 	}
 
@@ -115,7 +115,7 @@ app.post(personsResourceRoot, (request, response, next) => {
 			
 				newPerson.save()
 					.then(result => {
-						response.json(newPerson)
+						response.json(result)
 					})
 					.catch(error => {
 						next(error)
@@ -152,7 +152,7 @@ app.put(`${personsResourceRoot}/:id`, (request, response, next) => {
 		})
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
 	Person.find()
 		.then(result => {
 			response.send(

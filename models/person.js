@@ -13,20 +13,10 @@ mongoose.connect(dbUrl)
 		console.error('Database connection failed', error)
 	})
 
-
 const numberValidator = input => {
 	console.debug('Validating phonenumber', input)
 
 	return /^[\d]{2,3}-\d+$/.test(input)
-
-	// const indexOfDash = input.indexOf('-')
-	// if (indexOfDash < 0) {
-	// 	return false
-	// }
-	// const parts = input.split('-')
-	// if (parts.length !== 2 || (parts[0].length < 2 || parts[0].length > 3) || Number())
-
-	// return false
 }
 
 const personSchema = new mongoose.Schema({
